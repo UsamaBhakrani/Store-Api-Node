@@ -15,7 +15,7 @@ app.get("/", (req, res) =>
     .send("<h1>Hello</h1><a href='/api/v1/products'>Products Route</a>")
 );
 
-app.use("./api/v1/products", productsRouter);
+app.use("/api/v1/products", productsRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleWare);
