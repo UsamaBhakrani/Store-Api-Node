@@ -1,12 +1,23 @@
 const Product = require("../models/product");
+// const productsList = require("../products.json");
 
 const getAllProductsStatic = async (req, res) => {
-  res.status(200).json({ msg: "Products Route" });
+  try {
+    const products = await Product.find({ featured: false });
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(400).json({ msg: error });
+  }
 };
 
 const getAllProducts = async (req, res) => {
+  const { featured } = req.query;
+  const queryObject = {};
+  if (featured) {
+    queryObject.featured = featured === "true" ? true : false;
+  }
   try {
-    const products = await Product.find();
+    const products = await Product.find(queryObject);
     res.status(200).json(products);
   } catch (error) {
     res.status(400).json({ msg: error });
@@ -27,14 +38,14 @@ const getSingleProduct = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const newProduct = await Product.create({
-      featured: false,
-      rating: 4,
-      name: "Turkish Carpet",
-      price: 30,
-      company: "Canik",
-    });
-    res.status(200).json(newProduct);
+    // const newProduct = await Product.create(productsList);
+    // const newProduct = await Product.create({
+    //   rating: 4,
+    //   name: "Turkish Carpet",
+    //   price: 30,
+    //   company: "Canik",
+    // });
+    // res.status(200).json(newProduct);
   } catch (error) {
     res.status(400).json({ msg: error });
   }
