@@ -2,9 +2,12 @@ const Product = require("../models/product");
 // const productsList = require("../products.json");
 
 const getAllProductsStatic = async (req, res) => {
+  const search = "";
   try {
-    const products = await Product.find({ featured: false });
-    res.status(200).json(products);
+    const products = await Product.find({
+      name: { $regex: search, $options: "i" },
+    });
+    res.status(200).json({ numberOfResults: products.length, products });
   } catch (error) {
     res.status(400).json({ msg: error });
   }
@@ -20,7 +23,7 @@ const getAllProducts = async (req, res) => {
     queryObject.company = company;
   }
   if (name) {
-    queryObject.name = name;
+    queryObject.name = { $regex: name, $options: "i" };
   }
 
   try {
