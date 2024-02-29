@@ -14,7 +14,7 @@ const getAllProductsStatic = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-  const { featured, company, name, sort } = req.query;
+  const { featured, company, name, sort, fields } = req.query;
   const queryObject = {};
   if (featured) {
     queryObject.featured = featured === "true" ? true : false;
@@ -31,10 +31,20 @@ const getAllProducts = async (req, res) => {
   if (sort) {
     const sortList = sort.split(",").join(" ");
     result = result.sort(sortList);
+  } else {
+    result = result.sort("createdAt");
   }
-  else {
-    result = result.sort('createdAt')
+
+  if (fields) {
+    const fieldsList = fields.split(",").join(" ");
+    result = result.select(fieldsList);
   }
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  result = result.skip(skip).limit(limit);
 
   try {
     const products = await result;
